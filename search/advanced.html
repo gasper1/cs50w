@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Search</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="right">
+            <a href="index.html">Back to Search</a>
+        </div>
+        <h3>Find pages with...</h3>
+        <form class="advanced_form" action="https://google.com/search">
+            <div>
+                <label for="all">all these words: </label>
+                <input id="all" type="text" name="as_q">
+            </div>
+            <div>
+                <label for="exact">this exact word or phrase: </label>
+                <input id="exact" type="text" name="as_epq"><br/>
+            </div>
+            <div>
+                <label for="any">any of these words: </label>
+                <input id="any" type="text" name="as_oq">
+            </div>
+            <div>
+                <label for="none">none of these words: </label>
+                <input id="none" type="text" name="as_eq">
+            </div>
+                <br/>
+            <input class="advanced_button" type="submit" value="Google Search">
+        </form>
+    </body>
+</html>
