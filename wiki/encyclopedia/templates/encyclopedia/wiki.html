@@ -9,7 +9,7 @@
 {% autoescape off %}
     {{ content }}
     <p>
-        <a href="../edit/{{ title }}">Edit page</a>
+        <a href="{% url 'edit' title %}">Edit page</a>
     </p>
 {% endautoescape %}
 

@@ -32,25 +32,29 @@ def search(request):
     })
 
 def new(request):
-    page_title, page_content = '', ''
-    if request.method =='POST':
-        page_title = request.POST.get('page_title','')
-        page_content = request.POST.get('page_content','')   
-
-    #TODO check if entry is already stored
-    
-    #TODO if not, create a new .md file in the entries page
-    
+    title, content = '', ''
+    if request.method == 'POST':
+        title = request.POST.get('title','')
+        content = request.POST.get('content','')   
+        if util.get_entry(title) is None:
+            util.save_entry(title, content)
+            return redirect("../wiki/" + title)
 
     return render(request, "encyclopedia/new.html", {
-        'page_title': page_title,
-        'page_content': page_content
+        'title': title,
+        'content': content
     })
 
 def edit(request, title):
+    edit_title, edit_content = None, None
+    if request.method == 'POST':
+        edit_title = request.POST.get('title','N/A')
+        edit_content = request.POST.get('content','N/A')
+        if edit_content:
+            util.save_entry(title, edit_content)
     return render(request, "encyclopedia/edit.html", {
-        "page_title": title,
-        "page_content": util.get_entry(title)
+        "title": title,
+        "content": util.get_entry(title)
     })
 
 def random(request):

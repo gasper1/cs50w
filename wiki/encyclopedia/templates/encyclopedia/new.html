@@ -8,10 +8,10 @@
     <h1>Create New Page</h1>
 
     <form action="{% url 'new' %}" method="post">{% csrf_token %}
-        <label for="page_title">Entry Title: </label>
-        <input type="text" name="page_title" id="page_title" placeholder="Title of the article" value="{{ page_title }}"/><br/>
-        <label for="page_content">Content: </label><br/>
-        <textarea id="page_content" name="page_content" placeholder="Content of the page">{{ page_content }}</textarea><br/>
+        <label for="title">Entry Title: </label>
+        <input type="text" name="title" id="title" placeholder="Title of the article" value="{{ title }}"/><br/>
+        <label for="content">Content: </label><br/>
+        <textarea id="content" name="content" placeholder="Content of the page">{{ content }}</textarea><br/>
         <input type="submit" name="submit" value="Save" />
     </form>
 
