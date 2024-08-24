@@ -2,12 +2,14 @@ from django.shortcuts import render
 from markdown2 import Markdown
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.http import HttpResponseRedirect
 from django.core.files import File
 
 from . import util
 
 from random import randint
 
+# TODO - Improve it with Django Forms (see video, around timestamp 1:23:00-1:25:00) for server side validation
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -16,16 +18,20 @@ def index(request):
 
 def wiki(request, title):
     markdowner = Markdown()
+    content = util.get_entry(title)
+    if content is None:
+        title = '404'
+        content = '#Oops! This page does not exist!'
     return render(request, "encyclopedia/wiki.html", {
         "title": title,
-        "content": markdowner.convert(util.get_entry(title))
+        "content": markdowner.convert(content)
     })
 
 def search(request):
     query = request.GET.get('q','')
     entries = [entry for entry in util.list_entries() if query.lower() in entry.lower()]
     if len(entries) == 1:
-        return redirect("/wiki/" + entries[0])
+        return HttpResponseRedirect(reverse("encyclopedia:wiki/" + entries[0]))
     return render(request, "encyclopedia/search.html", {
         "query": query, 
         "entries": entries

@@ -9,7 +9,11 @@
 {% autoescape off %}
     {{ content }}
     <p>
+    {% if title != '404' %}
         <a href="{% url 'edit' title %}">Edit page</a>
+    {% else %}
+        <a href="{% url 'index' %}">Back to Home</a>
+    {% endif %}
     </p>
 {% endautoescape %}
 
