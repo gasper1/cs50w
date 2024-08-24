@@ -31,7 +31,7 @@ def search(request):
     query = request.GET.get('q','')
     entries = [entry for entry in util.list_entries() if query.lower() in entry.lower()]
     if len(entries) == 1:
-        return HttpResponseRedirect(reverse("encyclopedia:wiki/" + entries[0]))
+        return HttpResponseRedirect(reverse("wiki", args=[entries[0]]))
     return render(request, "encyclopedia/search.html", {
         "query": query, 
         "entries": entries
