@@ -5,11 +5,13 @@
 
     <ul>
         {% for listing in listings %}
-            <li>{{listing.title}}</li>
+            <li><a href="{% url 'item' listing.id %}">{{listing.title}}</a></li>
         {% empty %}
             <li>No listings</li>
         {% endfor %}
     </ul>
+
+    <a href="{% url 'new' %}">Create new listing</a>
     
 
 {% endblock %}

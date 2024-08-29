@@ -17,7 +17,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField(max_length=200)
     byUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings", default='')
-    startingPrice = models.FloatField()
+    starting_price = models.FloatField()
     imgURL = models.URLField(blank=True, default='')
     category = models.ForeignKey(ListingCategories, on_delete=models.CASCADE, related_name="listings")
 
