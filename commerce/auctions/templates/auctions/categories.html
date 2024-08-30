@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>Category: </h2>
+
+<ul>
+{% for category in categories %}
+    <li><a href="{% url 'categories' category.id %}">{{ category.name }}</a></li>
+{% empty %}
+    <li>No categories</li>
+{% endfor %}
+</ul>
+
+{% if category_name %}
+<h2>Listings in {{ category_name }}</h2>    
+<ul>
+    {% for listing in listings %}
+    <li><a href="{% url 'item' listing.id %}">{{ listing.title }}</a></li>
+    {% empty %}
+    <li>No listings</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<a href="{% url 'index' %}">Back to Home Page</a>    
+
+{% endblock %}

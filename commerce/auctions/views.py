@@ -54,6 +54,25 @@ def new(request):
     })
 
 
+def categories(request, id='None'):
+    if id != 'None':
+        category = ListingCategories.objects.get(pk=id)
+        category_name = category.name
+        listings = category.listings.all()
+    else:
+        category_name = ''
+        listings = ''
+    return render(request, "auctions/categories.html", {
+        "categories": ListingCategories.objects.all(),
+        "category_name": category_name,
+        "listings": listings
+    })
+
+
+def watchlist(request):
+    return render(request, "auctions/watchlist.html")
+
+
 def login_view(request):
     if request.method == "POST":
 
