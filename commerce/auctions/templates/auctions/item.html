@@ -35,7 +35,18 @@
 <br><br>
 
 <h2>Comments</h2>
-<p>TODO</p>
+<form action="{% url 'comment' listing.id %}" method="POST">
+    {% csrf_token %}
+    {{ comment_form }}
+    <button type="submit">Reply</button>
+</form>
+<ul>
+    {% for comment in comments %}
+    <li><strong>{{comment.by_user}}</strong> ¦ {{comment.created_at}}: {{comment.text}}</li>
+    {% empty %}
+    <li>No comments</li>
+    {% endfor %}
+</ul>
 
 <br>
 

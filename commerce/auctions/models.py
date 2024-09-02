@@ -17,7 +17,7 @@ class ListingCategories(models.Model):
 class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField(max_length=200)
-    by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings", default='')
+    by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings", default="")
     starting_price = models.FloatField()
     created_at = models.DateTimeField(default=now)
     imgURL = models.URLField(blank=True, default='')
@@ -29,11 +29,14 @@ class Listing(models.Model):
 
 
 class Bid(models.Model):
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")
     price = models.FloatField()
-    created_at = models.DateTimeField(default=now)
     by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids", default="")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")
+    created_at = models.DateTimeField(default=now)
 
 
 class Comment(models.Model):
     text = models.TextField(max_length=200)
+    by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments", default="")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments", default="")
+    created_at = models.DateTimeField(default=now)

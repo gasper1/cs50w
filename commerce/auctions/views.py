@@ -6,7 +6,7 @@ from django.urls import reverse
 from django import forms
 from django.db.models import Max
 
-from .models import User, Listing, ListingCategories, Bid
+from .models import User, Listing, ListingCategories, Bid, Comment
 
 
 class CreateForm(forms.Form):
@@ -26,6 +26,10 @@ class BidForm(forms.Form):
     price = forms.FloatField(min_value=0.01)
 
 
+class CommentForm(forms.Form):
+    comment = forms.CharField(max_length=200)
+
+
 def index(request):
     listings = []
     if request.user.is_authenticated:
@@ -42,12 +46,15 @@ def item(request, id):
     listing = Listing.objects.get(pk=id)
     max_bid = listing.bids.aggregate(Max("price", default=listing.starting_price))["price__max"]
     bid_form = BidForm(max_bid=max_bid)
+    comment_form = CommentForm()
     starting_price_bid = Bid(listing=listing, price=listing.starting_price, by_user=listing.by_user, created_at=listing.created_at)
     return render(request, "auctions/item.html", {
         "listing": listing,
         "watched_by_user": user in listing.watchlisted_by.all(),
         "bid_form": bid_form,
-        "bids": [starting_price_bid] + [bid for bid in Bid.objects.filter(listing=listing)]
+        "bids": [starting_price_bid] + [bid for bid in listing.bids.all()],
+        "comment_form": comment_form,
+        "comments": [comment for comment in listing.comments.all()]
     })
 
 
@@ -59,11 +66,26 @@ def place_bid(request, id):
         form = BidForm(request.POST, max_bid=max_bid)
         if form.is_valid() and user != listing.by_user:
             bid = Bid(
+                price = form.cleaned_data["price"],
                 by_user = user,
-                listing = listing,
-                price = form.cleaned_data["price"]
+                listing = listing
             )
             bid.save()
+    return HttpResponseRedirect(reverse("item", kwargs={'id':id}))
+
+
+def comment(request, id):
+    if request.method == "POST":
+        user = User.objects.get(pk=request.user.id)
+        listing = Listing.objects.get(pk=id)
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = Comment(
+                text = form.cleaned_data["comment"],
+                by_user = user,
+                listing = listing
+            )
+            comment.save()
     return HttpResponseRedirect(reverse("item", kwargs={'id':id}))
 
 
