@@ -27,9 +27,11 @@ def index(request):
 
 
 def item(request, id):
+    user = User.objects.get(pk=request.user.id)
     listing = Listing.objects.get(pk=id)
     return render(request, "auctions/item.html", {
-        "listing": listing
+        "listing": listing,
+        "watched_by_user": user in listing.watchlisted_by.all()
     })
 
 
@@ -70,7 +72,25 @@ def categories(request, id='None'):
 
 
 def watchlist(request):
-    return render(request, "auctions/watchlist.html")
+    user = User.objects.get(pk=request.user.id)
+    return render(request, "auctions/watchlist.html", {
+        "listings": user.watchlist_items.all()
+    })
+
+
+def watch_unwatch_item(request, id):
+    user = User.objects.get(pk=request.user.id)
+    listing = Listing.objects.get(pk=id)
+    watched_by_user = (user in listing.watchlisted_by.all())
+    if watched_by_user:
+        listing.watchlisted_by.remove(user)
+    else:
+        listing.watchlisted_by.add(user)
+    watched_by_user = not watched_by_user
+    return render(request, "auctions/item.html", {
+        "listing": listing,
+        "watched_by_user": watched_by_user
+    })
 
 
 def login_view(request):

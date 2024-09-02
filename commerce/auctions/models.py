@@ -20,6 +20,7 @@ class Listing(models.Model):
     starting_price = models.FloatField()
     imgURL = models.URLField(blank=True, default='')
     category = models.ForeignKey(ListingCategories, on_delete=models.CASCADE, related_name="listings")
+    watchlisted_by = models.ManyToManyField(User, related_name="watchlist_items")
 
     def __str__(self) -> str:
         return f"{self.title} - {self.category}"
