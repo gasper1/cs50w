@@ -11,9 +11,14 @@
     {% endif %}
 </a>
 
+{% if listing.imgURL %}
+<br>
+<img src="{{listing.imgURL}}" style="max-width: 400px;"/>
+{% endif %}
+
 <br><br>
 
-{% if user != listing.by_user %}
+{% if user != listing.by_user and listing.status == "ACT" %}
 <br>
 <h2>Place a bid</h2>
 <form action="{% url 'place_bid' listing.id %}" method="POST">
@@ -22,6 +27,15 @@
     <button type="submit">Bid</button>
 </form>
 <br>
+{% elif listing.status == "ACT" %}
+<form action="{% url 'close_bid' listing.id %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Close bidding</button>
+</form>
+{% else %}
+<p>
+    The item is sold. <strong>{{max_bidder}}</strong> won the bid with an offer of <strong>{{max_bid}}</strong>
+</p>
 {% endif %}
 
 <br>

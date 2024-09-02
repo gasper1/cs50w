@@ -15,6 +15,12 @@ class ListingCategories(models.Model):
 
 
 class Listing(models.Model):
+    ACTIVE = "ACT"
+    CLOSED = "CLO"
+    STATUS_CHOICES = {
+        ACTIVE: "Active",
+        CLOSED: "Closed"
+    }
     title = models.CharField(max_length=64)
     description = models.TextField(max_length=200)
     by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings", default="")
@@ -23,6 +29,7 @@ class Listing(models.Model):
     imgURL = models.URLField(blank=True, default='')
     category = models.ForeignKey(ListingCategories, on_delete=models.CASCADE, related_name="listings")
     watchlisted_by = models.ManyToManyField(User, related_name="watchlist_items")
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=ACTIVE)
 
     def __str__(self) -> str:
         return f"{self.title} - {self.category}"
