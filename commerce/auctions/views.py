@@ -16,6 +16,7 @@ class CreateForm(forms.Form):
     title = forms.CharField(label="Title", max_length=64)
     category = forms.ModelChoiceField(queryset=ListingCategories.objects.all(), label="Category")
     description = forms.CharField(widget=forms.Textarea, label="Description")
+    img_url = forms.URLField()
     starting_price = forms.FloatField()
 
 
@@ -164,6 +165,7 @@ def new(request):
                 title = form.cleaned_data["title"],
                 description = form.cleaned_data["description"],
                 category=form.cleaned_data['category'],
+                imgURL=form.cleaned_data['img_url'],
                 starting_price = form.cleaned_data["starting_price"],
                 by_user = user
             )
