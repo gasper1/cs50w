@@ -10,7 +10,31 @@
     Remove from watchlist
     {% endif %}
 </a>
+
 <br><br>
+
+<h2>Place a bid</h2>
+<form action="{% url 'place_bid' listing.id %}" method="POST">
+    {% csrf_token %}
+    {{ bid_form }}
+    <button type="submit">Bid</button>
+</form>
+
+<br><br>
+
+<h2>Bids</h2>
+<ul>
+    {% for bid in bids %}
+    <li>{{bid.price}} - {{bid.created_at}} - {{bid.by_user}}</li>
+    {% endfor %}
+</ul>
+
+<br><br>
+
+<h2>Comments</h2>
+<p>TODO</p>
+
+<br>
 
 <a href="{% url 'index' %}">Back to Home Page</a>    
 

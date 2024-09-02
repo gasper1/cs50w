@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 
-from .models import User, Listing, ListingCategories
+from .models import User, Listing, ListingCategories, Bid
 
 
 class CreateForm(forms.Form):
@@ -13,6 +13,10 @@ class CreateForm(forms.Form):
     category = forms.ModelChoiceField(queryset=ListingCategories.objects.all(), label="Category")
     description = forms.CharField(widget=forms.Textarea, label="Description")
     starting_price = forms.FloatField()
+
+
+class BidForm(forms.Form):
+    price = forms.FloatField()
 
 
 def index(request):
@@ -29,10 +33,28 @@ def index(request):
 def item(request, id):
     user = User.objects.get(pk=request.user.id)
     listing = Listing.objects.get(pk=id)
+    bid_form = BidForm()
+    starting_price_bid = Bid(listing=listing, price=listing.starting_price, by_user=listing.by_user, created_at=listing.created_at)
     return render(request, "auctions/item.html", {
         "listing": listing,
-        "watched_by_user": user in listing.watchlisted_by.all()
+        "watched_by_user": user in listing.watchlisted_by.all(),
+        "bid_form": bid_form,
+        "bids": [starting_price_bid] + [bid for bid in Bid.objects.filter(by_user=user, listing=listing)]
     })
+
+
+def place_bid(request, id):
+    if request.method == "POST":
+        user = User.objects.get(pk=request.user.id)
+        form = BidForm(request.POST)
+        if form.is_valid():
+            bid = Bid(
+                by_user = user,
+                listing = Listing.objects.get(pk=id),
+                price = form.cleaned_data["price"]
+            )
+            bid.save()
+    return HttpResponseRedirect(reverse("item", kwargs={'id':id}))
 
 
 def new(request):
@@ -45,7 +67,7 @@ def new(request):
                 description = form.cleaned_data["description"],
                 category=form.cleaned_data['category'],
                 starting_price = form.cleaned_data["starting_price"],
-                byUser = user
+                by_user = user
             )
             listing.save()
             return HttpResponseRedirect(reverse("index"))
