@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 from django.db.models import Max
+from django.utils.http import urlencode
 
 from .models import User, Listing, ListingCategories, Bid, Comment
 
@@ -141,10 +142,8 @@ def watch_unwatch_item(request, id):
     else:
         listing.watchlisted_by.add(user)
     watched_by_user = not watched_by_user
-    return render(request, "auctions/item.html", {
-        "listing": listing,
-        "watched_by_user": watched_by_user
-    })
+    query_kwargs={"watched_by_user": watched_by_user}
+    return HttpResponseRedirect(reverse("item", kwargs={"id": id}) + '?' + urlencode(query_kwargs))
 
 
 def login_view(request):
