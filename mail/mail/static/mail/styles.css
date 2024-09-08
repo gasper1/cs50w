@@ -1,3 +1,18 @@
 textarea {
     min-height: 400px;
 }
+
+.email {
+    border-radius: 10px;
+    border: thin solid gray;
+    margin-bottom: 5px;
+    padding: 6px;
+}
+
+.unread {
+    background-color: white;
+}
+
+.read {
+    background-color: lightgray;
+}
